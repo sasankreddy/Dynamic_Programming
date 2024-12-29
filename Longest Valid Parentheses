@@ -1,0 +1,37 @@
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        """
+        My approach:
+        - The problem is to find the length of the longest valid (well-formed) parentheses substring in a given string `s`.
+        - We can use a stack to keep track of the indices of the parentheses. The stack will help to identify the valid pairs and their corresponding lengths.
+        - We initialize the stack with `-1` to handle edge cases, such as when a valid substring starts from index 0.
+        - As we iterate through the string:
+            - If we encounter an opening parenthesis `'('`, we push its index onto the stack.
+            - If we encounter a closing parenthesis `')'`, we pop the top element from the stack, which represents the index of the matching opening parenthesis.
+                - After popping, if the stack is empty, it means we have encountered an invalid or unmatched parenthesis, so we push the current index onto the stack.
+                - If the stack is not empty, the top element of the stack gives the starting index of the most recent valid substring, and the difference between the current index and this starting index gives the length of the valid substring.
+        - We keep track of the maximum length of valid parentheses during the iteration.
+        
+        Time Complexity: O(n), where `n` is the length of the string `s`. We only traverse the string once, and each stack operation (push and pop) takes constant time.
+        Space Complexity: O(n), for storing the indices in the stack.
+
+        """
+        # Initialize stack with -1 to handle edge cases
+        stack = [-1]
+        maxlen = 0
+        
+        # Iterate over the string
+        for i, char in enumerate(s):
+            if char == "(":  # If opening parenthesis, push the index
+                stack.append(i)
+            elif char == ")":  # If closing parenthesis, pop the top index
+                stack.pop()
+                
+                # If stack is empty, push the current index as a base for future substrings
+                if not stack:
+                    stack.append(i)
+                else:
+                    # Calculate the length of the valid parentheses substring
+                    maxlen = max(maxlen, i - stack[-1])
+        
+        return maxlen
